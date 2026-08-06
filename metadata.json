@@ -1,0 +1,6 @@
+{
+  "name": "Trixeon Futures - Crypto Futures Trading Platform",
+  "description": "Professional crypto futures trading platform with real-time market data analytics, leverage trading, candlestick charting, and secure blockchain verification.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

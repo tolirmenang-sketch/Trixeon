@@ -1,0 +1,140 @@
+{
+  "entities": {
+    "user": {
+      "title": "User Profile",
+      "description": "User account information and wallet balances",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Firestore document ID or user UID" },
+        "uid": { "type": "string", "description": "Display UID string, e.g. TX-984210" },
+        "name": { "type": "string", "maxLength": 100, "description": "Display name" },
+        "email": { "type": "string", "maxLength": 200, "description": "User email address" },
+        "phone": { "type": "string", "maxLength": 30, "description": "User phone number" },
+        "avatar": { "type": "string", "maxLength": 500, "description": "Avatar image URL" },
+        "authMethod": { "type": "string", "enum": ["google", "phone", "userid"], "description": "Method of authentication" },
+        "isVerified": { "type": "boolean", "description": "KYC verification status" },
+        "wallet": {
+          "type": "object",
+          "description": "User wallet balances"
+        }
+      },
+      "required": ["uid", "name", "authMethod", "isVerified", "wallet"]
+    },
+    "position": {
+      "title": "Trading Position",
+      "description": "Active leveraged futures trading position",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string", "description": "Owner user auth UID" },
+        "pairSymbol": { "type": "string", "maxLength": 20, "description": "Crypto pair e.g. BTCUSDT" },
+        "side": { "type": "string", "enum": ["long", "short"] },
+        "marginMode": { "type": "string", "enum": ["isolated", "cross"] },
+        "leverage": { "type": "number" },
+        "entryPrice": { "type": "number" },
+        "markPrice": { "type": "number" },
+        "size": { "type": "number" },
+        "valueUsdt": { "type": "number" },
+        "marginUsdt": { "type": "number" },
+        "pnlUsdt": { "type": "number" },
+        "pnlPercentage": { "type": "number" },
+        "liquidationPrice": { "type": "number" },
+        "tpPrice": { "type": "number" },
+        "slPrice": { "type": "number" },
+        "txHash": { "type": "string", "maxLength": 128 },
+        "blockNumber": { "type": "number" },
+        "timestamp": { "type": "number" },
+        "mode": { "type": "string", "enum": ["real", "demo"] }
+      },
+      "required": ["userId", "pairSymbol", "side", "marginMode", "leverage", "entryPrice", "size", "valueUsdt", "marginUsdt", "txHash", "timestamp", "mode"]
+    },
+    "order": {
+      "title": "Trading Limit Order",
+      "description": "Open pending limit order",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string", "description": "Owner user auth UID" },
+        "pairSymbol": { "type": "string", "maxLength": 20 },
+        "side": { "type": "string", "enum": ["long", "short"] },
+        "type": { "type": "string", "enum": ["market", "limit", "stop_market"] },
+        "marginMode": { "type": "string", "enum": ["isolated", "cross"] },
+        "leverage": { "type": "number" },
+        "price": { "type": "number" },
+        "amount": { "type": "number" },
+        "marginUsdt": { "type": "number" },
+        "tpPrice": { "type": "number" },
+        "slPrice": { "type": "number" },
+        "status": { "type": "string", "enum": ["open", "filled", "canceled"] },
+        "createdAt": { "type": "number" },
+        "mode": { "type": "string", "enum": ["real", "demo"] },
+        "txHash": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["userId", "pairSymbol", "side", "type", "marginMode", "leverage", "price", "amount", "marginUsdt", "status", "createdAt", "mode", "txHash"]
+    },
+    "tradeHistory": {
+      "title": "Trade History Record",
+      "description": "Historical record of closed trading positions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string", "description": "Owner user auth UID" },
+        "pairSymbol": { "type": "string", "maxLength": 20 },
+        "side": { "type": "string", "enum": ["long", "short"] },
+        "entryPrice": { "type": "number" },
+        "closePrice": { "type": "number" },
+        "leverage": { "type": "number" },
+        "marginMode": { "type": "string", "enum": ["isolated", "cross"] },
+        "realizedPnl": { "type": "number" },
+        "pnlPercentage": { "type": "number" },
+        "closedAt": { "type": "number" },
+        "mode": { "type": "string", "enum": ["real", "demo"] },
+        "txHash": { "type": "string", "maxLength": 128 },
+        "blockNumber": { "type": "number" }
+      },
+      "required": ["userId", "pairSymbol", "side", "entryPrice", "closePrice", "leverage", "marginMode", "realizedPnl", "pnlPercentage", "closedAt", "mode", "txHash"]
+    },
+    "depositRequest": {
+      "title": "Deposit Request",
+      "description": "Pending or processed deposit request submitted to Admin via Google Sheets",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userUid": { "type": "string" },
+        "userName": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "amountIdr": { "type": "number" },
+        "amountUsdt": { "type": "number" },
+        "method": { "type": "string" },
+        "status": { "type": "string", "enum": ["PENDING", "APPROVED", "REJECTED"] },
+        "createdAt": { "type": "number" },
+        "approvedAt": { "type": "number" },
+        "notes": { "type": "string" }
+      },
+      "required": ["userId", "userUid", "userName", "amountIdr", "method", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "user",
+      "description": "User profiles and wallet balances"
+    },
+    "/positions/{positionId}": {
+      "schema": "position",
+      "description": "User active futures trading positions"
+    },
+    "/orders/{orderId}": {
+      "schema": "order",
+      "description": "User open limit orders"
+    },
+    "/tradeHistory/{historyId}": {
+      "schema": "tradeHistory",
+      "description": "User completed trade history"
+    },
+    "/deposit_requests/{requestId}": {
+      "schema": "depositRequest",
+      "description": "Deposit requests pending or approved via Google Sheets by Admin"
+    }
+  }
+}
